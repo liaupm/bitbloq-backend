@@ -110,3 +110,31 @@ Then, you must access your MongoDB `bitbloq` database, go to the `users` collect
 `use bitbloq`
 `db.getCollection('users').update({"username" : "TheUsernameThatYouHaveJustRegistered"}, {$set: {"role": "admin"}})`
 Finally, having your back-end running, run on front-end folder: `grunt updateAllCollections`. This command will fill your bloqs collection with necessary data.
+
+## Now everything works, but the hardware components are missing
+
+You might have noticed there are no boards, neither robots or any component to add to a project. They are JSON located at app/static, but you must load them into the JSON. To do so, you must send a couple `POST` requests to the back-end api:
+
+1. POST `http://localhost:8000/bitbloq/v1/auth/local` with a HEADER like:
+```
+Content-Type: application/json
+```
+And this BODY:
+```
+{
+	"email": "TheUsernameThatYouHaveJustRegistered",	
+	"password": "ThePasswordYouChoseForThisUser"
+}
+```
+You will see a response like this:
+```
+{
+    "token": "eyJ0eXAiOiJds1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1YWIxNDFiMTFlODk4cdlmZmExYjdiMDIiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE1MjQwNjgxqwQsImV4cCI6MTUyNDIxMjE5NH0.2Z7q0nXgcbtEe1j5M-txR-dHulQW-VfyE_NC7c6gMU"
+}
+```
+2. POST `http://localhost:8000/bitbloq/v1/hardware` with these headers:
+```
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1YWIxNDFiMTFlODk4ZjlmZmExYjdiMDIiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE1MjQwNjgxOTQsImV4cCI6MTUyNDIxMjE5NH0.2Z7q0nXgcbtET51j5M-txR-dHulQW-VfyE_NC7c6gMU
+```
+Then paste the `app/static/boards_?-?-?.json` code into the body and send it. If it succeeds, check your MongoDB database. Boards should be filled with content! Repeat this second call with each static and your installation will reach the end.
