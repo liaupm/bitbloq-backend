@@ -43,6 +43,7 @@ var ProjectSchema = new mongoose.Schema({
         setup: {},
         loop: {}
     },
+    experiment: String,
     hardwareTags: [String],
     userTags: [String],
     image: {
